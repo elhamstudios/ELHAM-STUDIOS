@@ -512,6 +512,11 @@
       }
       #formToggleBtn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0, 255, 204, 0.45); }
 
+      .price-range { color: var(--accent); font-family: var(--font-display); font-size: 1.55rem; font-weight: 700; margin: 8px 0 14px; }
+      #budgetEstimate { display:block; margin-top:10px; color:var(--text-muted); line-height:1.5; }
+      #budgetEstimate.budget-ok { color:var(--accent); }
+      #budgetEstimate.budget-low { color:#ffbd69; }
+
       #projectFormContainer { display: none; background: rgba(12, 12, 16, 0.58); border: 1px solid var(--accent); padding: clamp(22px, 4.5vw, 40px); border-radius: 20px; margin: 35px 0; position: relative; z-index: 25; }
       .form-grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 0 20px; }
       #projectFormContainer label { display: block; margin-bottom: 10px; color: #ffffff; font-weight: 600; font-size: 1.05rem; }
@@ -699,7 +704,31 @@
         </div>
       </div>
       
-      <div class="section-card" id="work">
+      
+      <div class="section-card" id="pricing">
+        <h2>WEBSITE PACKAGES & PRICING</h2>
+        <p>Clear starting ranges for common website projects. Final quotes depend on the agreed scope and requirements.</p>
+        <div class="services-grid-wrapper">
+          <div class="service-block">
+            <h3>Basic Business Website</h3>
+            <p class="price-range">R2,500 – R3,500</p>
+            <p>1–3 pages, mobile-friendly layout, About and Services sections, contact form or WhatsApp link, and basic SEO setup.</p>
+          </div>
+          <div class="service-block">
+            <h3>Professional Website</h3>
+            <p class="price-range">R4,500 – R7,500</p>
+            <p>4–7 pages, custom branding, responsive design, forms, map integration where needed, and SEO setup.</p>
+          </div>
+          <div class="service-block">
+            <h3>Online Store</h3>
+            <p class="price-range">R8,000 – R12,000</p>
+            <p>Product catalogue, cart, checkout, payment integration, delivery details, and order management.</p>
+          </div>
+        </div>
+        <p><strong>Introductory offer:</strong> For the first three customers, starting prices are R2,000, R4,000, and R7,000 respectively. Third-party costs such as domains, hosting, and payment gateway fees are separate.</p>
+      </div>
+
+<div class="section-card" id="work">
         <h2>OUR WORK</h2>
         <p>Here are some examples of websites designed and developed by Elham Studios.</p>
         
@@ -869,6 +898,7 @@
 
         <div id="projectFormContainer">
           <form action="https://api.web3forms.com/submit" method="POST">
+            <input type="hidden" id="estimatedStartingPrice" name="estimated_starting_price_zar" value="">
             <input type="hidden" name="access_key" value="51ade758-8182-4474-a2c8-84bd1fb60c0b">
             <input type="hidden" name="subject" value="New Elite Project Submission - Elham Studios">
             
@@ -899,22 +929,18 @@
                 <label for="websiteType">Website Type</label>
                 <select id="websiteType" name="website_type" required>
                   <option value="" disabled selected>Select Website Type</option>
-                  <option value="Business Website">Business Website</option>
-                  <option value="Landing Page">Landing Page</option>
-                  <option value="E-commerce Store">E-commerce Store</option>
-                  <option value="Portfolio / Personal">Portfolio / Personal</option>
-                  <option value="Custom Development">Custom Development</option>
+                  <option value="Basic Business Website">Basic Business Website (R2,500–R3,500)</option>
+                  <option value="Professional Website">Professional Website (R4,500–R7,500)</option>
+                  <option value="E-commerce Store">Online Store (R8,000–R12,000)</option>
+                  <option value="Landing Page">Landing Page (custom quote)</option>
+                  <option value="Portfolio / Personal">Portfolio / Personal (custom quote)</option>
+                  <option value="Custom Development">Custom Development (custom quote)</option>
                 </select>
               </div>
               <div>
-                <label for="budgetRange">Budget Range</label>
-                <select id="budgetRange" name="budget_range" required>
-                  <option value="" disabled selected>Select Budget Range</option>
-                  <option value="Under $300">Under $300</option>
-                  <option value="$300 - $1000">$300 - $1000</option>
-                  <option value="$1000 - $3000">$1000 - $3000</option>
-                  <option value="$3000+">$3000+</option>
-                </select>
+                <label for="buyerBudget">Your Actual Budget (ZAR)</label>
+                <input type="number" id="buyerBudget" name="buyer_budget_zar" min="0" step="50" placeholder="e.g. 3500" required>
+                <small id="budgetEstimate" aria-live="polite">Choose a website type and enter your budget to see how it compares with our pricing.</small>
               </div>
             </div>
             
@@ -941,6 +967,41 @@
     </footer>
 
     <script>
+      function compareBuyerBudget() {
+        var websiteType = document.getElementById("websiteType").value;
+        var budgetInput = document.getElementById("buyerBudget");
+        var result = document.getElementById("budgetEstimate");
+        var budget = Number(budgetInput.value);
+        var minimumPrice = {
+          "Basic Business Website": 2500,
+          "Professional Website": 4500,
+          "E-commerce Store": 8000
+        };
+        var price = minimumPrice[websiteType];
+
+        result.className = "";
+        if (!websiteType || !budgetInput.value) {
+          result.textContent = "Choose a website type and enter your budget to see how it compares with our pricing.";
+          return;
+        }
+        if (price === undefined) {
+          result.textContent = "This project needs a custom quote. We will review your requirements and budget.";
+          return;
+        }
+        if (budget >= price) {
+          result.className = "budget-ok";
+          result.textContent = "Your budget meets the starting price of R" + price.toLocaleString("en-ZA") + ". Final pricing depends on project scope.";
+        } else {
+          result.className = "budget-low";
+          result.textContent = "Your budget is R" + (price - budget).toLocaleString("en-ZA") + " below the starting price of R" + price.toLocaleString("en-ZA") + ". You can still submit your request to discuss the scope.";
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("websiteType").addEventListener("change", compareBuyerBudget);
+        document.getElementById("buyerBudget").addEventListener("input", compareBuyerBudget);
+      });
+
       function toggleMobileNav() {
         var menu = document.getElementById("navLinksMenu");
         if(window.innerWidth <= 768) {
