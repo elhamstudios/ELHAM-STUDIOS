@@ -978,6 +978,7 @@
           "E-commerce Store": 8000
         };
         var price = minimumPrice[websiteType];
+        document.getElementById("estimatedStartingPrice").value = price === undefined ? "Custom quote" : "R" + price;
 
         result.className = "";
         if (!websiteType || !budgetInput.value) {
