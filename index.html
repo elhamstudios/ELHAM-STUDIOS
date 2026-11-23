@@ -23,11 +23,11 @@
     <style>
       :root {
         --bg-dark: #050505;
-        --card-bg: rgba(6, 11, 25, 0.75);
-        --primary: #0055ff;
-        --primary-glow: rgba(0, 85, 255, 0.4);
-        --accent: #00ffcc;
-        --accent-glow: rgba(0, 255, 204, 0.3);
+        --card-bg: rgba(255, 255, 255, 0.045);
+        --primary: #8b5cf6;
+        --primary-glow: rgba(139, 92, 246, 0.38);
+        --accent: #B7FF00;
+        --accent-glow: rgba(183, 255, 0, 0.28);
         --text-main: #e2e8f0;
         --text-muted: #94a3b8;
         --font-display: 'Space Grotesk', sans-serif;
@@ -52,6 +52,51 @@
         position: relative;
       }
 
+
+      /* Ambient motion + transparent glass atmosphere */
+      body::before, body::after {
+        content: "";
+        position: fixed;
+        width: 46vw;
+        height: 46vw;
+        min-width: 320px;
+        min-height: 320px;
+        border-radius: 50%;
+        filter: blur(95px);
+        opacity: .13;
+        pointer-events: none;
+        z-index: 0;
+        animation: ambientDrift 22s ease-in-out infinite alternate;
+      }
+      body::before { top: -18%; left: -16%; background: #8b5cf6; }
+      body::after { right: -18%; bottom: -20%; background: #B7FF00; animation-delay: -9s; }
+      @keyframes ambientDrift {
+        from { transform: translate3d(0,0,0) scale(.9); }
+        to { transform: translate3d(9vw,7vh,0) scale(1.15); }
+      }
+      .section-card {
+        background: rgba(255,255,255,.035);
+        border: 1px solid rgba(255,255,255,.12);
+        backdrop-filter: blur(24px) saturate(145%);
+        -webkit-backdrop-filter: blur(24px) saturate(145%);
+        box-shadow: 0 18px 55px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.06);
+      }
+      .service-block, .project-card, .profile-card, .feature-item, .testimonial-box,
+      .faq-item, #projectFormContainer {
+        background: rgba(255,255,255,.035);
+        border-color: rgba(255,255,255,.10);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+      .scanline-system::after {
+        background: linear-gradient(90deg, transparent, rgba(183,255,0,.32), transparent);
+        box-shadow: 0 0 14px rgba(183,255,0,.28);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        body::before, body::after, .fc-moving-bg, .scanline-system::after { animation: none !important; }
+        *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+      }
+
       /* Sticky Navigation Bar */
       .navbar {
         position: fixed;
@@ -59,8 +104,8 @@
         left: 0;
         width: 100%;
         height: 70px;
-        background: rgba(5, 5, 5, 0.85);
-        backdrop-filter: blur(15px);
+        background: rgba(5, 5, 5, 0.48);
+        backdrop-filter: blur(22px) saturate(145%);
         -webkit-backdrop-filter: blur(15px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         display: flex;
@@ -80,9 +125,9 @@
         text-transform: uppercase;
       }
 
-      .nav-logo span {
-        color: var(--accent);
-      }
+      .nav-logo-image { display:block; width:190px; max-height:48px; object-fit:contain; }
+      .footer-logo { display:block; width:min(260px, 70vw); height:auto; margin:0 auto 18px; }
+      @media (max-width: 768px) { .nav-logo-image { width:158px; } }
 
       .nav-links {
         display: flex;
@@ -107,7 +152,7 @@
       }
 
       .nav-cta-btn {
-        background: rgba(0, 255, 204, 0.1);
+        background: rgba(183, 255, 0, 0.08);
         border: 1px solid var(--accent);
         color: var(--accent) !important;
         padding: 8px 18px;
@@ -130,7 +175,7 @@
 
       /* Premium Dark Top Section */
       .fc-top-wrapper {
-        background: var(--bg-dark);
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.10), rgba(183, 255, 0, 0.035), transparent 70%);
         color: #ffffff;
         padding: 180px 20px 100px 20px;
         width: 100%;
@@ -287,7 +332,7 @@
 
       .section-card {
         background: var(--card-bg);
-        border: 1px solid rgba(0, 85, 255, 0.15);
+        border: 1px solid rgba(183, 255, 0, 0.13);
         border-radius: 24px;
         padding: clamp(24px, 5vw, 50px);
         margin-bottom: 40px;
@@ -380,8 +425,8 @@
       }
 
       .feature-item {
-        background: linear-gradient(135deg, rgba(6, 11, 25, 0.8), rgba(10, 20, 45, 0.9));
-        border: 1px solid rgba(0, 255, 204, 0.12);
+        background: rgba(255, 255, 255, 0.035);
+        border: 1px solid rgba(183, 255, 0, 0.16);
         padding: 20px;
         border-radius: 16px;
         display: flex;
@@ -398,7 +443,7 @@
 
       .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 25px; list-style: none; }
       .project-card { background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.04); padding: 20px; border-radius: 18px; display: flex; flex-direction: column; transition: transform 0.3s ease, border-color 0.3s ease; }
-      .project-card:hover { background: rgba(6, 11, 25, 0.8); border-color: rgba(0, 85, 255, 0.4); transform: translateY(-4px); }
+      .project-card:hover { background: rgba(255, 255, 255, 0.035); border-color: rgba(0, 85, 255, 0.4); transform: translateY(-4px); }
       .project-card b { font-family: var(--font-display); font-size: 1.3rem; color: var(--accent); display: block; margin-bottom: 12px; letter-spacing: 0.5px; }
 
       .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr)); gap: 25px; }
@@ -414,7 +459,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: rgba(0, 85, 255, 0.15);
+        background: rgba(139, 92, 246, 0.12);
         border: 1px solid var(--primary);
         color: #ffffff;
         text-decoration: none;
@@ -430,7 +475,7 @@
       }
       .project-link-btn:hover { background: var(--primary); border-color: #ffffff; }
 
-      .testimonial-box { background: rgba(0, 255, 204, 0.03); border: 1px dashed rgba(0, 255, 204, 0.2); padding: 18px; border-radius: 12px; margin-top: 20px; position: relative; }
+      .testimonial-box { background: rgba(183, 255, 0, 0.035); border: 1px dashed rgba(0, 255, 204, 0.2); padding: 18px; border-radius: 12px; margin-top: 20px; position: relative; }
       .testimonial-text { font-style: italic; color: var(--text-main); font-size: 1rem; margin-bottom: 8px; line-height: 1.6; }
       .testimonial-author { font-family: var(--font-display); font-size: 0.85rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; display: block; text-align: right; font-weight: 700; }
 
@@ -467,7 +512,7 @@
       }
       #formToggleBtn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0, 255, 204, 0.45); }
 
-      #projectFormContainer { display: none; background: #050b18; border: 1px solid var(--accent); padding: clamp(22px, 4.5vw, 40px); border-radius: 20px; margin: 35px 0; position: relative; z-index: 25; }
+      #projectFormContainer { display: none; background: rgba(12, 12, 16, 0.58); border: 1px solid var(--accent); padding: clamp(22px, 4.5vw, 40px); border-radius: 20px; margin: 35px 0; position: relative; z-index: 25; }
       .form-grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 0 20px; }
       #projectFormContainer label { display: block; margin-bottom: 10px; color: #ffffff; font-weight: 600; font-size: 1.05rem; }
       
@@ -542,7 +587,7 @@
 
     <!-- Navigation -->
     <nav class="navbar">
-      <a href="#" class="nav-logo">Elham<span>Studios</span></a>
+      <a href="#" class="nav-logo" aria-label="Elham Studios home"><img src="assets/elham-logo.svg" alt="ELHAM STUDIOS" class="nav-logo-image"></a>
       <i class="fa-solid fa-bars nav-toggle-icon" onclick="toggleMobileNav()"></i>
       <ul class="nav-links" id="navLinksMenu">
         <li><a href="#about" onclick="toggleMobileNav()">About</a></li>
@@ -800,7 +845,7 @@
         </div>
       </div>
 
-      <div class="section-card" id="contact" style="border-color: rgba(0, 255, 204, 0.4); background: rgba(0, 85, 255, 0.02);">
+      <div class="section-card" id="contact" style="border-color: rgba(0, 255, 204, 0.4); background: rgba(255, 255, 255, 0.025);">
         <h2>Start Your Project</h2>
         <p>Ready to build your online presence? Let's create a website that helps your business grow.</p>
         
@@ -876,7 +921,7 @@
     </div>
 
     <footer>
-      <p class="brand-signature">ELHAM STUDIOS ARCHITECTS</p>
+      <img src="assets/elham-logo.svg" alt="ELHAM STUDIOS" class="footer-logo">
       <p>Building Modern Websites For Growing Businesses.</p>
       <p>&copy; 2026 Elham Studios.</p>
     </footer>
