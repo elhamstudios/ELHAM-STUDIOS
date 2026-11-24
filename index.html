@@ -753,6 +753,16 @@
             </div>
             <p>Professional websites that help businesses build credibility, showcase services, and attract new customers.</p>
           </div>
+
+          <div class="service-block">
+            <div>
+              <h3>Custom AI Systems</h3>
+              <div class="img-wrapper">
+                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Custom AI assistant interface">
+              </div>
+            </div>
+            <p>We design custom AI assistants for businesses, with tailored knowledge, workflows, integrations, and deployment options.</p>
+          </div>
         </div>
          
         <hr>
@@ -1028,7 +1038,18 @@
                   <option value="Landing Page">Landing Page (custom quote)</option>
                   <option value="Portfolio / Personal">Portfolio / Personal (custom quote)</option>
                   <option value="Custom Development">Custom Development (custom quote)</option>
+                  <option value="Custom AI Development">Custom AI Systems</option>
                 </select>
+              </div>
+              <div id="aiPackageField" hidden>
+                <label for="aiPackage">Choose Your AI Package</label>
+                <select id="aiPackage" name="ai_package">
+                  <option value="" selected disabled>Select an AI package</option>
+                  <option value="ELHAM AI Essential">ELHAM AI Essential — R8,000 setup (R500–R1,000/month + usage)</option>
+                  <option value="ELHAM AI Pro">ELHAM AI Pro — R18,000 setup (R1,500–R3,000/month + usage)</option>
+                  <option value="ELHAM AI Enterprise">ELHAM AI Enterprise — from R45,000 setup (R4,000–R10,000+/month + usage)</option>
+                </select>
+                <small>Setup is a once-off development fee. Monthly hosting, maintenance and AI usage are separate.</small>
               </div>
               <div>
                 <label for="buyerBudget">Your Actual Budget (ZAR)</label>
@@ -1062,20 +1083,30 @@
     <script>
       function compareBuyerBudget() {
         var websiteType = document.getElementById("websiteType").value;
+        var aiPackage = document.getElementById("aiPackage");
+        var aiPackageField = document.getElementById("aiPackageField");
         var budgetInput = document.getElementById("buyerBudget");
         var result = document.getElementById("budgetEstimate");
         var budget = Number(budgetInput.value);
         var minimumPrice = {
           "Basic Business Website": 2500,
           "Professional Website": 4500,
-          "E-commerce Store": 8000
+          "E-commerce Store": 8000,
+          "ELHAM AI Essential": 8000,
+          "ELHAM AI Pro": 18000,
+          "ELHAM AI Enterprise": 45000
         };
-        var price = minimumPrice[websiteType];
-        document.getElementById("estimatedStartingPrice").value = price === undefined ? "Custom quote" : "R" + price;
-
+        aiPackageField.hidden = websiteType !== "Custom AI Development";
+        aiPackage.required = websiteType === "Custom AI Development";
+        var selectedPackage = websiteType === "Custom AI Development" ? aiPackage.value : "";
+        var price = websiteType === "Custom AI Development" ? minimumPrice[selectedPackage] : minimumPrice[websiteType];
+        var priceLabel = price === undefined ? "Custom quote" : "R" + price.toLocaleString("en-ZA");
+        document.getElementById("estimatedStartingPrice").value = priceLabel;
         result.className = "";
-        if (!websiteType || !budgetInput.value) {
-          result.textContent = "Choose a website type and enter your budget to see how it compares with our pricing.";
+        if (!websiteType || !budgetInput.value || (websiteType === "Custom AI Development" && !selectedPackage)) {
+          result.textContent = websiteType === "Custom AI Development"
+            ? "Choose an AI package and enter your budget to compare it with the setup price."
+            : "Choose a project type and enter your budget to see how it compares with our pricing.";
           return;
         }
         if (price === undefined) {
@@ -1093,6 +1124,7 @@
 
       document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("websiteType").addEventListener("change", compareBuyerBudget);
+        document.getElementById("aiPackage").addEventListener("change", compareBuyerBudget);
         document.getElementById("buyerBudget").addEventListener("input", compareBuyerBudget);
       });
 
